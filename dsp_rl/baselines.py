@@ -47,6 +47,19 @@ def is_total_dominating(gd, D):
 def exact(gd, kind="dom", time_limit=120):
     """kind: 'dom' (gamma), 'ind' (independent domination), 'tot' (total domination gamma_t).
     Returns (value, proven_optimal)."""
+    v, _, ok = exact_solution(gd, kind, time_limit)
+    return v, ok
+
+
+def exact_solution(gd, kind="dom", time_limit=120):
+    """Like exact() but also returns the optimal vertex set, if the solve finished.
+    Returns (integer_value, set_of_selected_vertices_or_None, proven_optimal)."""
+    v, sel, ok = solve_ilp(gd, kind, time_limit)
+    return v, ({int(i) for i in np.flatnonzero(sel)} if sel is not None else None), ok
+
+
+def solve_ilp(gd, kind="dom", time_limit=120):
+    """Build the ILP, solve with scipy.milp; returns (value, x_bool_array_or_None, proven)."""
     n = gd.n
     ne = len(gd.row) // 2
     A = lil_matrix((n + (ne if kind == "ind" else 0), n))
@@ -61,4 +74,5 @@ def exact(gd, kind="dom", time_limit=120):
             A[r, a] = 1; A[r, b] = 1; lb.append(-np.inf); ub.append(1); r += 1
     res = milp(np.ones(n), constraints=LinearConstraint(A.tocsr(), lb, ub), integrality=np.ones(n),
                bounds=Bounds(0, 1), options={"time_limit": time_limit})
-    return int(round(res.fun)), bool(res.status == 0)
+    x = None if res.x is None else np.round(res.x).astype(int)
+    return int(round(res.fun)), x, bool(res.status == 0)
