@@ -1,1 +1,11 @@
 dsp_rl/venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# Model checkpoints (regenerable from runs/*/config.json)
+*.pt
