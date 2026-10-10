@@ -5,19 +5,31 @@ import argparse, collections, csv, json, os, time
 import numpy as np, torch
 from graphs import er, make_graph_data
 from env import DSPEnv
+from tdsp_env import TDSPEnv
 from agent import DDQNAgent
+from tdsp import has_isolated
+
+
+def sample_graph(a, rng):
+    """A fresh training graph; for TDSP, skip graphs with an isolated vertex
+    (no total dominating set exists, so the episode could not terminate)."""
+    while True:
+        gd = make_graph_data(er(a.n, a.p, rng))
+        if a.env != "tdsp" or not has_isolated(gd):
+            return gd
 
 
 def run_policy(agent, env, gd):
-    vf = env.reset(gd); done = False; ret = 0.0
+    s = env.reset(gd); done = False; ret = 0.0
     while not done:
-        q = agent.q_values(gd, vf); cand = env.candidates()
-        vf, r, done = env.step(int(cand[np.argmax(q[cand])])); ret += r
+        q = agent.q_values(gd, s); cand = env.candidates()
+        s, r, done = env.step(int(cand[np.argmax(q[cand])])); ret += r
     return len(env.selected), ret
 
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--env", default="dsp", choices=["dsp", "tdsp"])
     ap.add_argument("--n", type=int, default=20); ap.add_argument("--p", type=float, default=0.4)
     ap.add_argument("--episodes", type=int, default=200000); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="runs/test")
@@ -31,28 +43,29 @@ def main():
     ap.add_argument("--target_every", type=int, default=1000)            # paper: 1000
     ap.add_argument("--eps_start", type=float, default=1.0); ap.add_argument("--eps_end", type=float, default=0.05)
     ap.add_argument("--eps_decay_frac", type=float, default=0.5)         # D8
-    ap.add_argument("--reward", default="paper", choices=["paper", "gain"]); ap.add_argument("--agg", default="sum")
+    ap.add_argument("--reward", default=None, choices=["paper", "gain", "size"]); ap.add_argument("--agg", default="sum")
     ap.add_argument("--eval_every", type=int, default=1000); ap.add_argument("--val_graphs", type=int, default=50)
     ap.add_argument("--device", default="cpu")
     a = ap.parse_args()
+    a.reward = a.reward or ("size" if a.env == "tdsp" else "paper")
     os.makedirs(a.out, exist_ok=True)
     json.dump({**vars(a), "torch": torch.__version__}, open(f"{a.out}/config.json", "w"), indent=1)
     rng = np.random.default_rng(a.seed); torch.manual_seed(a.seed)
-    env = DSPEnv(reward_mode=a.reward)
-    agent = DDQNAgent(a.nf, 3, a.agg, a.lr, a.gamma, a.tau, a.device)
+    env = TDSPEnv(reward_mode=a.reward) if a.env == "tdsp" else DSPEnv(reward_mode=a.reward)
+    agent = DDQNAgent(a.nf, 3, a.agg, in_ch=env.n_channels, lr=a.lr, gamma=a.gamma, tau=a.tau, device=a.device)
     vrng = np.random.default_rng(10_000 + a.seed)
-    val = [make_graph_data(er(a.n, a.p, vrng)) for _ in range(a.val_graphs)]    # fixed validation set
+    val = [sample_graph(a, vrng) for _ in range(a.val_graphs)]                  # fixed validation set
     buf = collections.deque(maxlen=None if a.frozen_buffer else a.buffer)
     f = open(f"{a.out}/log.csv", "w", newline=""); w = csv.writer(f)
     w.writerow(["episode", "eps", "loss", "val_mean_size", "val_mean_return", "elapsed_s"]); t0 = time.time(); loss = float("nan")
     for ep in range(1, a.episodes + 1):
         eps = max(a.eps_end, a.eps_start - (a.eps_start - a.eps_end) * ep / (a.eps_decay_frac * a.episodes))
-        gd = make_graph_data(er(a.n, a.p, rng)); vf = env.reset(gd); done = False
+        gd = sample_graph(a, rng); s = env.reset(gd); done = False
         while not done:
-            v = agent.act(gd, vf, eps, rng); vf2, r, done = env.step(v)
+            v = agent.act(gd, s, env.candidates(), eps, rng); s2, r, done = env.step(v)
             if not (a.frozen_buffer and len(buf) >= a.buffer):
-                buf.append((gd, vf, vf2, v, r, done))
-            vf = vf2
+                buf.append((gd, s, s2, v, r, done, env.candidates()))
+            s = s2
         if ep > a.train_start and len(buf) >= a.batch:
             loss = agent.update([buf[i] for i in rng.choice(len(buf), a.batch, replace=False)])
         if ep % a.target_every == 0:

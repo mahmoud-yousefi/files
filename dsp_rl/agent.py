@@ -6,26 +6,26 @@ from model import MPNNQ, collate
 
 
 class DDQNAgent:
-    def __init__(self, nf=32, layers=3, agg="sum", lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
         self.dev = torch.device(device)
-        self.online = MPNNQ(nf, layers, agg).to(self.dev)
+        self.online = MPNNQ(nf, layers, agg, in_ch).to(self.dev)
         self.target = copy.deepcopy(self.online)
         self.opt = torch.optim.Adam(self.online.parameters(), lr=lr)
         self.gamma, self.tau = gamma, tau
 
     @torch.no_grad()
-    def q_values(self, gd, vf):
-        return self.online(collate([(gd, vf)], self.dev)).cpu().numpy()
+    def q_values(self, gd, state):
+        return self.online(collate([(gd, state)], self.dev)).cpu().numpy()
 
-    def act(self, gd, vf, eps, rng):
-        cand = np.flatnonzero(vf == 0)
+    def act(self, gd, state, cand, eps, rng):
+        """cand: the legal actions (from env.candidates()), not derived from the state."""
         if rng.random() < eps:
             return int(rng.choice(cand))
-        q = self.q_values(gd, vf)
+        q = self.q_values(gd, state)
         return int(cand[np.argmax(q[cand])])                                   # Eq.(7)
 
     def update(self, batch):
-        """batch: list of (gd, vf, vf_next, v, r, done)."""
+        """batch: list of (gd, state, state_next, v, r, done, cand_next)."""
         b0 = collate([(t[0], t[1]) for t in batch], self.dev)
         b1 = collate([(t[0], t[2]) for t in batch], self.dev)
         idx = torch.tensor([b0.offs[i] + batch[i][3] for i in range(len(batch))], device=self.dev)
@@ -34,16 +34,15 @@ class DDQNAgent:
             qo = self.online(b1).cpu().numpy()                                 # action selection: online net
             qt = self.target(b1).cpu().numpy()                                 # action evaluation: target net
             y = np.zeros(len(batch), dtype=np.float32)
-            for i, (gd, _, vf2, v, r, done) in enumerate(batch):
+            for i, (gd, _, _, v, r, done, cand) in enumerate(batch):
                 y[i] = r
-                if not done:                                                   # DECISIONS D3
+                if not done and len(cand):                                     # DECISIONS D3
                     sl = slice(b1.offs[i], b1.offs[i] + gd.n)
-                    cand = np.flatnonzero(vf2 == 0)
                     a = cand[np.argmax(qo[sl][cand])]
                     y[i] += self.gamma * qt[sl][a]
         loss = 0.5 * torch.mean((q_hat - torch.from_numpy(y).to(self.dev)) ** 2)   # Eq.(8)
         self.opt.zero_grad(); loss.backward(); self.opt.step()
-        return float(loss)
+        return loss.item()
 
     @torch.no_grad()
     def soft_update(self):

@@ -26,19 +26,19 @@ HEADER = ["family", "n", "policy", "|S|", "total_dominating", "steps", "gamma_t"
 
 
 def random_policy(env, gd, rng):
-    vf, done, steps = env.reset(gd), False, 0
+    s, done, steps = env.reset(gd), False, 0
     while not done:
-        vf, _, done = env.step(int(rng.choice(env.candidates()))); steps += 1
+        s, _, done = env.step(int(rng.choice(env.candidates()))); steps += 1
     return set(env.selected), steps
 
 
 def greedy_env_policy(env, gd):
     """Greedy under the new rules: pick the vertex satisfying the most new vertices."""
-    vf, done, steps = env.reset(gd), False, 0
+    env.reset(gd); done, steps = False, 0
     nbr = [set(gd.nbrs[u].tolist()) for u in range(gd.n)]
     while not done:
-        best = max(env.candidates(), key=lambda u: len({w for w in nbr[u] if vf[w] == 0}))
-        vf, _, done = env.step(int(best)); steps += 1
+        best = max(env.candidates(), key=lambda u: len({w for w in nbr[u] if env.vf[w] == 0}))
+        _, _, done = env.step(int(best)); steps += 1
     return set(env.selected), steps
 
 
@@ -48,10 +48,10 @@ def mechanics_check(gd, rng, env):
     v = int(rng.choice(env.candidates()))
     nb = set(gd.nbrs[v].tolist())
     vf0 = env.vf.copy()
-    vf, _, _ = env.step(v)
+    env.step(v)
     assert env.ins[v] == 1 and v not in env.candidates()
-    assert all(vf[u] == 1 for u in nb), "neighbours of v must be satisfied"
-    assert vf[v] == vf0[v], "v must NOT become satisfied by being picked"
+    assert all(env.vf[u] == 1 for u in nb), "neighbours of v must be satisfied"
+    assert env.vf[v] == vf0[v], "v must NOT become satisfied by being picked"
     return True
 
 

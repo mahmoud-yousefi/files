@@ -30,6 +30,12 @@ python experiments/tdsp/exp3_env.py --out results/tdsp/exp3
 ```
 آزمایش ۳: فضای عمل بازطراحی‌شده در `tdsp_env.py` (`TDSPEnv`) — با همان رابط `reset/candidates/step`. انتخاب `v` فقط `N(v)` را راضی می‌کند نه خودِ `v`؛ پایان وقتی همه همسایه‌ی داخلِ `S` دارند. تأیید: ۱۱۸ مکانیک پاس، همه‌ی اجراها احاطه‌کننده‌ی تام، و `greedy_env` = `greedy_tds` در ۵۹/۵۹. خروجی در `results/tdsp/exp3/env.{md,csv}`.
 
+```bash
+python experiments/tdsp/interface_check.py       # تطبیق عامل/محیط: باید «ALL INTERFACE CHECKS PASSED» بدهد
+python train.py --env tdsp --n 20 --episodes 200000 --seed 0 --out runs/tdsp_er20_s0   # آموزش RL روی TDSP
+```
+آزمایش ۳ب (تطبیق): `TDSPEnv` حالت **دوکاناله** `[vf, ins]` می‌دهد؛ عامل نامزدها را از `env.candidates()` می‌گیرد (نه `vf==0`)؛ و پاداش `size` (`r=-1`) بازده را `-|S|` می‌کند. برای TDSP در آموزش گراف‌های دارای رأس منزوی حذف می‌شوند. جزئیات در `DECISIONS.md` (T6).
+
 ## چطور نتیجه را برای من بفرست
 ۱. اگر خطا گرفتی: متن کامل traceback را paste کن (اولین کار ما رفع باگ احتمالی است، چون بخش torch را من نتوانستم اجرا کنم).
 ۲. بعد از هر آزمایش این‌ها را به چت پیوست کن: `runs/<نام>/config.json`، `runs/<نام>/log.csv`، و `results/*/*.md` (یا `.csv`).

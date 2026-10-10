@@ -10,26 +10,29 @@ class Batch:
 
 
 def collate(items, device):
-    """items: list of (GraphData, vf np.uint8). Returns Batch with offsets/sizes for indexing."""
-    off = 0; R, C, AN, G, V, DG, offs, sizes = [], [], [], [], [], [], [], []
-    for g, (gd, vf) in enumerate(items):
+    """items: list of (GraphData, state) where state is (n,) or (n,k) float.
+    Returns Batch with offsets/sizes for indexing."""
+    off = 0; R, C, AN, G, ST, DG, offs, sizes = [], [], [], [], [], [], [], []
+    for g, (gd, st) in enumerate(items):
+        st = np.asarray(st, dtype=np.float32)
+        if st.ndim == 1: st = st.reshape(-1, 1)          # 1-channel state -> (n,1)
         R.append(gd.row + off); C.append(gd.col + off); AN.append(gd.an)
-        G.append(np.full(gd.n, g, dtype=np.int64)); V.append(vf.astype(np.float32)); DG.append(gd.deg)
+        G.append(np.full(gd.n, g, dtype=np.int64)); ST.append(st); DG.append(gd.deg)
         offs.append(off); sizes.append(gd.n); off += gd.n
     b = Batch()
     t = lambda x, dt: torch.from_numpy(np.concatenate(x).astype(dt)).to(device)
     b.row, b.col = t(R, np.int64), t(C, np.int64)
-    b.an, b.gid, b.vf, b.deg = t(AN, np.float32), t(G, np.int64), t(V, np.float32), t(DG, np.float32)
+    b.an, b.gid, b.state, b.deg = t(AN, np.float32), t(G, np.int64), t(ST, np.float32), t(DG, np.float32)
     b.ng, b.N = len(items), off
     b.offs, b.sizes = np.array(offs), np.array(sizes)
     return b
 
 
 class MPNNQ(nn.Module):
-    def __init__(self, nf=32, layers=3, agg="sum"):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1):
         super().__init__()
-        self.nf, self.agg = nf, agg
-        self.t4 = nn.Linear(2, nf)            # Eq.(4)  (n-independent version, DECISIONS D5)
+        self.nf, self.agg, self.in_ch = nf, agg, in_ch
+        self.t4 = nn.Linear(2 * in_ch, nf)    # Eq.(4); in_ch=1 reproduces the DSP model (D5)
         self.t3 = nn.Linear(nf + 1, nf)       # Eq.(3)  per-edge embedding (DECISIONS D5)
         self.t1 = nn.ModuleList([nn.Linear(3 * nf, nf) for _ in range(layers)])   # Eq.(2)
         self.t2 = nn.ModuleList([nn.Linear(nf, nf) for _ in range(layers)])
@@ -37,10 +40,13 @@ class MPNNQ(nn.Module):
         self.t5 = nn.Linear(2 * nf, 1)
 
     def forward(self, b):
-        N, nf, dev = b.N, self.nf, b.vf.device
+        N, nf, dev = b.N, self.nf, b.state.device
         z = lambda *s: torch.zeros(*s, device=dev)
-        nvf = z(N).index_add_(0, b.row, b.an * b.vf[b.col])                 # (A_norm vf)_v
-        f = F.relu(self.t4(torch.stack([b.vf, nvf], 1)))                    # Eq.(4)
+        feats = []
+        for j in range(self.in_ch):                                         # per-channel: [c_j, (A_norm c_j)_v]
+            cj = b.state[:, j]
+            feats += [cj, z(N).index_add_(0, b.row, b.an * cj[b.col])]
+        f = F.relu(self.t4(torch.stack(feats, 1)))                          # Eq.(4)
         e = F.relu(self.t3(torch.cat([f[b.col], b.an.unsqueeze(1)], 1)))    # Eq.(3), per edge (v<-w)
         esum = z(N, nf).index_add_(0, b.row, e)
         h = f

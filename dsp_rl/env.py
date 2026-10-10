@@ -5,15 +5,20 @@ import numpy as np
 
 
 class DSPEnv:
+    n_channels = 1                                    # state = coverage vf only
+
     def __init__(self, alpha=1.0, reward_mode="paper"):
-        assert reward_mode in ("paper", "gain")
+        assert reward_mode in ("paper", "gain", "size")
         self.alpha, self.mode = alpha, reward_mode
 
     def reset(self, gd):
         self.gd = gd
         self.vf = np.zeros(gd.n, dtype=np.uint8)
         self.selected = []
-        return self.vf.copy()
+        return self._state()
+
+    def _state(self):
+        return self.vf.reshape(-1, 1).astype(np.float32)
 
     def candidates(self):
         return np.flatnonzero(self.vf == 0)           # S_bar = V - S  (paper Eq.7)
@@ -21,7 +26,9 @@ class DSPEnv:
     def step(self, v):
         assert self.vf[v] == 0, "paper's mask forbids selecting a dominated vertex"
         nb = self.gd.nbrs[v]
-        if self.mode == "paper":                       # Eq.(5): alpha * vhat^T (A(i) . w), A(i) has zero diagonal
+        if self.mode == "size":                        # return = -|D| (for size minimisation)
+            r = -1.0
+        elif self.mode == "paper":                     # Eq.(5): alpha * vhat^T (A(i) . w), A(i) has zero diagonal
             r = self.alpha * float((1 - 2 * self.vf[nb].astype(np.int64)).sum())
         else:
             r = self.alpha * float(1 + (self.vf[nb] == 0).sum())
@@ -29,4 +36,4 @@ class DSPEnv:
         self.vf[nb] = 1
         self.selected.append(int(v))
         done = bool(self.vf.all())                     # terminal condition: DECISIONS D2
-        return self.vf.copy(), r, done
+        return self._state(), r, done
