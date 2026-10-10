@@ -18,6 +18,25 @@ def has_isolated(gd):
     return bool((gd.deg == 0).any())
 
 
+def independence_witness(gd, D):
+    """Why an independent set can never be total-dominating (DECISIONS T4).
+
+    If D is independent, no member of D has a neighbour inside D, so every member
+    violates the total-domination condition. Returns one such offending vertex
+    (the first member of D), or None when D is not independent.
+    """
+    S = {int(v) for v in D}
+    for v in S:
+        if not (set(gd.nbrs[v].tolist()) & S):
+            return v
+    return None
+
+
+def masked_policy_set(agent, gd, env=None):
+    """Output of Chen's mask; identical to model_dominating_set, named for the exp2 story."""
+    return model_dominating_set(agent, gd, env)
+
+
 def model_dominating_set(agent, gd, env=None):
     """Run the trained policy greedily to a terminal state and return the selected set.
     With Chen's mask (DECISIONS D1) the result is an independent dominating set."""
