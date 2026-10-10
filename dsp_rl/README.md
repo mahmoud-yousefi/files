@@ -36,6 +36,15 @@ python train.py --env tdsp --n 20 --episodes 200000 --seed 0 --out runs/tdsp_er2
 ```
 آزمایش ۳ب (تطبیق): `TDSPEnv` حالت **دوکاناله** `[vf, ins]` می‌دهد؛ عامل نامزدها را از `env.candidates()` می‌گیرد (نه `vf==0`)؛ و پاداش `size` (`r=-1`) بازده را `-|S|` می‌کند. برای TDSP در آموزش گراف‌های دارای رأس منزوی حذف می‌شوند. جزئیات در `DECISIONS.md` (T6).
 
+```bash
+python train.py --env tdsp --reward size  --n 20 --episodes 200000 --seed 0 --out runs/tdsp_er20_s0_size
+python train.py --env tdsp --reward paper --n 20 --episodes 200000 --seed 0 --out runs/tdsp_er20_s0_paper
+python experiments/tdsp/exp4_eval.py \
+     --model size=runs/tdsp_er20_s0_size/model.pt --model paper=runs/tdsp_er20_s0_paper/model.pt \
+     --out results/tdsp/exp4
+```
+آزمایش ۴ (RL مستقیم روی TDSP): روی لتیس‌ها مدل از greedy بهتر است (میانگین `|S|/greedy` ≈ ۰.۹۵، مثلاً HEX 196 → ۸۳ در برابر ۹۸)؛ ولی روی گراف‌های تصادفیِ بزرگ `n≥80` بدتر است (تعمیم‌نیافته، چون فقط روی `n=20` آموزش دیده). خروجی در `results/tdsp/exp4/eval.{md,csv}`.
+
 ## چطور نتیجه را برای من بفرست
 ۱. اگر خطا گرفتی: متن کامل traceback را paste کن (اولین کار ما رفع باگ احتمالی است، چون بخش torch را من نتوانستم اجرا کنم).
 ۲. بعد از هر آزمایش این‌ها را به چت پیوست کن: `runs/<نام>/config.json`، `runs/<نام>/log.csv`، و `results/*/*.md` (یا `.csv`).
