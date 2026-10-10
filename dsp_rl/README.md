@@ -25,6 +25,11 @@ python experiments/tdsp/exp2_action_space.py --model runs/er20_s0/model.pt --out
 ```
 آزمایش ۲: آیا ماسک مقاله برای TDSP کار می‌کند؟ نتیجه: **۱۷۷/۱۷۷ مستقل، ۰/۱۷۷ احاطه‌کننده‌ی تام** ⇒ ماسکِ مقاله ذاتاً با TDSP ناسازگار است (T4). خروجی در `results/tdsp/exp2/action_space.{md,csv}`.
 
+```bash
+python experiments/tdsp/exp3_env.py --out results/tdsp/exp3
+```
+آزمایش ۳: فضای عمل بازطراحی‌شده در `tdsp_env.py` (`TDSPEnv`) — با همان رابط `reset/candidates/step`. انتخاب `v` فقط `N(v)` را راضی می‌کند نه خودِ `v`؛ پایان وقتی همه همسایه‌ی داخلِ `S` دارند. تأیید: ۱۱۸ مکانیک پاس، همه‌ی اجراها احاطه‌کننده‌ی تام، و `greedy_env` = `greedy_tds` در ۵۹/۵۹. خروجی در `results/tdsp/exp3/env.{md,csv}`.
+
 ## چطور نتیجه را برای من بفرست
 ۱. اگر خطا گرفتی: متن کامل traceback را paste کن (اولین کار ما رفع باگ احتمالی است، چون بخش torch را من نتوانستم اجرا کنم).
 ۲. بعد از هر آزمایش این‌ها را به چت پیوست کن: `runs/<نام>/config.json`، `runs/<نام>/log.csv`، و `results/*/*.md` (یا `.csv`).

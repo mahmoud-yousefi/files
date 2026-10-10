@@ -1,0 +1,125 @@
+# Exp3: redesigned action space for TDSP
+
+graphs/rows=118  mechanics checks passed=118
+Every policy run ended in a genuine total dominating set.
+
+| family | n | policy | |S| | total_dominating | steps | gamma_t | |S|/gamma_t | greedy_tds |
+|---|---|---|---|---|---|---|---|---|
+| GRID | 20 | random | 14 | True | 14 | 8 | 1.75 | 8 |
+| GRID | 20 | greedy_env | 8 | True | 8 | 8 | 1.0 | 8 |
+| GRID | 36 | random | 23 | True | 23 | 12 | 1.917 | 12 |
+| GRID | 36 | greedy_env | 12 | True | 12 | 12 | 1.0 | 12 |
+| GRID | 63 | random | 43 | True | 43 | 20 | 2.15 | 22 |
+| GRID | 63 | greedy_env | 22 | True | 22 | 20 | 1.1 | 22 |
+| GRID | 81 | random | 52 | True | 52 | 25 | 2.08 | 28 |
+| GRID | 81 | greedy_env | 28 | True | 28 | 25 | 1.12 | 28 |
+| GRID | 100 | random | 69 | True | 69 | 30 | 2.3 | 34 |
+| GRID | 100 | greedy_env | 34 | True | 34 | 30 | 1.133 | 34 |
+| GRID | 200 | random | 167 | True | 167 | 58 | 2.879 | 66 |
+| GRID | 200 | greedy_env | 66 | True | 66 | 58 | 1.138 | 66 |
+| GRID | 300 | random | 248 | True | 248 |  |  | 94 |
+| GRID | 300 | greedy_env | 94 | True | 94 |  |  | 94 |
+| GRID | 400 | random | 310 | True | 310 |  |  | 124 |
+| GRID | 400 | greedy_env | 124 | True | 124 |  |  | 124 |
+| GRID | 500 | random | 407 | True | 407 |  |  | 150 |
+| GRID | 500 | greedy_env | 150 | True | 150 |  |  | 150 |
+| HEX | 22 | random | 17 | True | 17 | 12 | 1.417 | 12 |
+| HEX | 22 | greedy_env | 12 | True | 12 | 12 | 1.0 | 12 |
+| HEX | 38 | random | 29 | True | 29 | 16 | 1.812 | 20 |
+| HEX | 38 | greedy_env | 20 | True | 20 | 16 | 1.25 | 20 |
+| HEX | 58 | random | 55 | True | 55 | 26 | 2.115 | 30 |
+| HEX | 58 | greedy_env | 30 | True | 30 | 26 | 1.154 | 30 |
+| HEX | 82 | random | 72 | True | 72 | 32 | 2.25 | 41 |
+| HEX | 82 | greedy_env | 41 | True | 41 | 32 | 1.281 | 41 |
+| HEX | 96 | random | 75 | True | 75 | 38 | 1.974 | 48 |
+| HEX | 96 | greedy_env | 48 | True | 48 | 38 | 1.263 | 48 |
+| HEX | 196 | random | 178 | True | 178 | 72 | 2.472 | 98 |
+| HEX | 196 | greedy_env | 98 | True | 98 | 72 | 1.361 | 98 |
+| HEX | 306 | random | 269 | True | 269 |  |  | 154 |
+| HEX | 306 | greedy_env | 154 | True | 154 |  |  | 154 |
+| HEX | 418 | random | 379 | True | 379 |  |  | 209 |
+| HEX | 418 | greedy_env | 209 | True | 209 |  |  | 209 |
+| HEX | 510 | random | 494 | True | 494 |  |  | 256 |
+| HEX | 510 | greedy_env | 256 | True | 256 |  |  | 256 |
+| TRI | 28 | random | 18 | True | 18 | 7 | 2.571 | 8 |
+| TRI | 28 | greedy_env | 8 | True | 8 | 7 | 1.143 | 8 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 9 | True | 9 | 3 | 3.0 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 3 | 1.333 | 4 |
+| ER | 40 | random | 9 | True | 9 | 4 | 2.25 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 7 | True | 7 | 3 | 2.333 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 3 | 1.333 | 4 |
+| ER | 40 | random | 10 | True | 10 | 4 | 2.5 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 17 | True | 17 | 4 | 4.25 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 6 | True | 6 | 4 | 1.5 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 11 | True | 11 | 4 | 2.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 6 | True | 6 | 4 | 1.5 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 8 | True | 8 | 4 | 2.0 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 9 | True | 9 | 4 | 2.25 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 7 | True | 7 | 3 | 2.333 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 3 | 1.333 | 4 |
+| ER | 40 | random | 9 | True | 9 | 3 | 3.0 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 3 | 1.333 | 4 |
+| ER | 40 | random | 5 | True | 5 | 3 | 1.667 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 3 | 1.333 | 4 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| ER | 40 | random | 6 | True | 6 | 3 | 2.0 | 3 |
+| ER | 40 | greedy_env | 3 | True | 3 | 3 | 1.0 | 3 |
+| ER | 40 | random | 7 | True | 7 | 4 | 1.75 | 4 |
+| ER | 40 | greedy_env | 4 | True | 4 | 4 | 1.0 | 4 |
+| BA | 40 | random | 19 | True | 19 | 6 | 3.167 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 21 | True | 21 | 6 | 3.5 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 26 | True | 26 | 5 | 5.2 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 23 | True | 23 | 5 | 4.6 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 5 | 1.2 | 6 |
+| BA | 40 | random | 17 | True | 17 | 5 | 3.4 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 34 | True | 34 | 5 | 6.8 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 21 | True | 21 | 5 | 4.2 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 13 | True | 13 | 6 | 2.167 | 7 |
+| BA | 40 | greedy_env | 7 | True | 7 | 6 | 1.167 | 7 |
+| BA | 40 | random | 14 | True | 14 | 6 | 2.333 | 8 |
+| BA | 40 | greedy_env | 8 | True | 8 | 6 | 1.333 | 8 |
+| BA | 40 | random | 20 | True | 20 | 6 | 3.333 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 22 | True | 22 | 6 | 3.667 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 26 | True | 26 | 6 | 4.333 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 23 | True | 23 | 5 | 4.6 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 19 | True | 19 | 6 | 3.167 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 28 | True | 28 | 6 | 4.667 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 6 | 1.0 | 6 |
+| BA | 40 | random | 13 | True | 13 | 5 | 2.6 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 26 | True | 26 | 5 | 5.2 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 10 | True | 10 | 5 | 2.0 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
+| BA | 40 | random | 20 | True | 20 | 5 | 4.0 | 6 |
+| BA | 40 | greedy_env | 6 | True | 6 | 5 | 1.2 | 6 |
+| BA | 40 | random | 18 | True | 18 | 5 | 3.6 | 5 |
+| BA | 40 | greedy_env | 5 | True | 5 | 5 | 1.0 | 5 |
