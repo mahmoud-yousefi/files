@@ -1,0 +1,15 @@
+family,n,n_instances,mean_components,any_isolated,mean_leaf_forced
+BA,20,20,1.0,False,0.35
+BA,100,20,1.0,False,0.05
+BA,300,20,1.0,False,0.0
+CTRL-disconnected,12,1,2.0,False,4.0
+ER,20,20,1.0,False,0.0
+ER,100,20,1.0,False,0.0
+ER,300,20,1.0,False,0.0
+GRID,20,1,1.0,False,0.0
+GRID,100,1,1.0,False,0.0
+GRID,400,1,1.0,False,0.0
+HEX,58,1,1.0,False,0.0
+HEX,96,1,1.0,False,0.0
+HEX,306,1,1.0,False,0.0
+TRI,28,1,1.0,False,0.0

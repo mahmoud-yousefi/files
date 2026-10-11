@@ -74,5 +74,7 @@ def solve_ilp(gd, kind="dom", time_limit=120):
             A[r, a] = 1; A[r, b] = 1; lb.append(-np.inf); ub.append(1); r += 1
     res = milp(np.ones(n), constraints=LinearConstraint(A.tocsr(), lb, ub), integrality=np.ones(n),
                bounds=Bounds(0, 1), options={"time_limit": time_limit})
-    x = None if res.x is None else np.round(res.x).astype(int)
-    return int(round(res.fun)), x, bool(res.status == 0)
+    ok = bool(res.status == 0 and res.x is not None and res.fun is not None)
+    x = None if not ok else np.round(res.x).astype(int)
+    val = int(round(res.fun)) if ok else None
+    return val, x, ok

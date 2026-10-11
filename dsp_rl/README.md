@@ -54,3 +54,8 @@ python experiments/tdsp/exp4_eval.py \
 python experiments/tdsp/exp6_baselines.py --model size=runs/tdsp_er20_s0_size_v2/model.pt --out results/tdsp/exp6
 ```
 آزمایش ۶ (خط مبنای قوی): TDSP = مسئله‌ی set-cover، پس علاوه بر greedy، `remove_redundant` و **GRASP** (در `heuristics.py`) اضافه شدند. نتیجه‌ی صادقانه: مدل در برابر GRASP **بدتر** است (۱۳ بدتر، ۶ مساوی، ۱ بهتر از ۲۰)؛ مزیتِ مدل **سرعت** است (~۵ برابر سریع‌تر از GRASP). خروجی در `results/tdsp/exp6/baselines.{md,csv}`.
+
+```bash
+python experiments/tdsp/exp7_reduction.py --out results/tdsp/exp7
+```
+آزمایش ۷ (قواعد کاهش): سه قاعده (منزوی، مؤلفه‌ها، برگ) در `reductions.py`. نتیجه‌ی **منفی و صادقانه**: قاعده‌ی برگ برای TDSP **نامعتبر** است (مثال نقض `P3`)؛ قواعد ۱ و ۲ درست‌اند (۱۵۶ مقایسه با ILP، صفر خطا) ولی روی گراف‌های ما **هیچ‌کدام فعال نمی‌شوند** (همه تک‌مؤلفه‌ای، بدون رأس منزوی، درجه‌ی کمینه ≥۲). خروجی در `results/tdsp/exp7/reduction.{md,csv}`.
