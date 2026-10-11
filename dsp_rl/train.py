@@ -49,6 +49,8 @@ def main():
     ap.add_argument("--mean_readout", action="store_true", default=None, help="n-independent graph readout (default on for tdsp)")
     ap.add_argument("--eval_every", type=int, default=1000); ap.add_argument("--val_graphs", type=int, default=50)
     ap.add_argument("--device", default="cpu")
+    ap.add_argument("--resume", action="store_true", help="continue from out/ckpt.pt if present (for Colab restarts)")
+    ap.add_argument("--ckpt_every", type=int, default=5000, help="save a resumable checkpoint every N episodes")
     a = ap.parse_args()
     a.sizes = [int(x) for x in a.sizes.split(",")] if a.sizes else [a.n]
     a.reward = a.reward or ("size" if a.env == "tdsp" else "paper")
@@ -63,9 +65,21 @@ def main():
     vrng = np.random.default_rng(10_000 + a.seed)
     val = [sample_graph(a, vrng) for _ in range(a.val_graphs)]                  # fixed validation set
     buf = collections.deque(maxlen=None if a.frozen_buffer else a.buffer)
-    f = open(f"{a.out}/log.csv", "w", newline=""); w = csv.writer(f)
-    w.writerow(["episode", "eps", "loss", "val_mean_size", "val_mean_return", "elapsed_s"]); t0 = time.time(); loss = float("nan")
-    for ep in range(1, a.episodes + 1):
+    ckpt = f"{a.out}/ckpt.pt"
+    start_ep, t0 = 1, time.time()
+    if a.resume and os.path.exists(ckpt):                                       # continue across Colab restarts
+        c = torch.load(ckpt, map_location=a.device, weights_only=False)
+        agent.online.load_state_dict(c["online"]); agent.target.load_state_dict(c["target"])
+        start_ep = c["ep"] + 1; buf.extend(c["buf"])
+        rng = np.random.default_rng(); rng.bit_generator.state = c["rng"]
+        torch.set_rng_state(torch.from_numpy(c["torch"]))
+        t0 = time.time() - c.get("elapsed", 0.0)
+        print(f"resumed from episode {c['ep']} ({len(buf)} transitions)", flush=True)
+    append = "a" if start_ep > 1 and os.path.exists(f"{a.out}/log.csv") else "w"
+    f = open(f"{a.out}/log.csv", append, newline=""); w = csv.writer(f)
+    if append == "w": w.writerow(["episode", "eps", "loss", "val_mean_size", "val_mean_return", "elapsed_s"])
+    loss = float("nan")
+    for ep in range(start_ep, a.episodes + 1):
         eps = max(a.eps_end, a.eps_start - (a.eps_start - a.eps_end) * ep / (a.eps_decay_frac * a.episodes))
         gd = sample_graph(a, rng); s = env.reset(gd); done = False
         while not done:
@@ -81,6 +95,10 @@ def main():
             res = [run_policy(agent, env, g) for g in val]
             w.writerow([ep, round(eps, 3), loss, np.mean([x[0] for x in res]), np.mean([x[1] for x in res]), round(time.time() - t0, 1)]); f.flush()
             print(ep, f"eps={eps:.2f} loss={loss:.3f} val|D|={np.mean([x[0] for x in res]):.2f} ret={np.mean([x[1] for x in res]):.2f}", flush=True)
+        if ep % a.ckpt_every == 0:
+            torch.save({"ep": ep, "online": agent.online.state_dict(), "target": agent.target.state_dict(),
+                        "buf": list(buf), "rng": rng.bit_generator.state,
+                        "torch": torch.get_rng_state().numpy(), "elapsed": time.time() - t0}, ckpt)
     agent.save(f"{a.out}/model.pt")
 
 
