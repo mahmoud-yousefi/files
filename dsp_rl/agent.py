@@ -6,9 +6,9 @@ from model import MPNNQ, collate
 
 
 class DDQNAgent:
-    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False, lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
         self.dev = torch.device(device)
-        self.online = MPNNQ(nf, layers, agg, in_ch).to(self.dev)
+        self.online = MPNNQ(nf, layers, agg, in_ch, mean_readout).to(self.dev)
         self.target = copy.deepcopy(self.online)
         self.opt = torch.optim.Adam(self.online.parameters(), lr=lr)
         self.gamma, self.tau = gamma, tau
@@ -54,3 +54,22 @@ class DDQNAgent:
 
     def load(self, path):
         self.online.load_state_dict(torch.load(path, map_location=self.dev)); self.target.load_state_dict(self.online.state_dict())
+        self.load_path = path
+
+
+def agent_for_model(model_path, device="cpu", **over):
+    """Rebuild an agent matching a saved model, reading its run's config.json so the
+    architecture (nf/agg/in_ch/mean_readout) always matches the checkpoint."""
+    import json, os
+    cfg = {}
+    cj = os.path.join(os.path.dirname(model_path), "config.json")
+    if os.path.exists(cj):
+        cfg = json.load(open(cj))
+    env_name = cfg.get("env", "dsp")
+    p = dict(nf=cfg.get("nf", 32), agg=cfg.get("agg", "sum"),
+             in_ch=cfg.get("in_ch", 2 if env_name == "tdsp" else 1),
+             mean_readout=cfg.get("mean_readout", False))
+    p.update(over)
+    ag = DDQNAgent(layers=3, device=device, **p)
+    ag.load(model_path)
+    return ag

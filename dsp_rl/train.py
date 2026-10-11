@@ -43,16 +43,20 @@ def main():
     ap.add_argument("--target_every", type=int, default=1000)            # paper: 1000
     ap.add_argument("--eps_start", type=float, default=1.0); ap.add_argument("--eps_end", type=float, default=0.05)
     ap.add_argument("--eps_decay_frac", type=float, default=0.5)         # D8
-    ap.add_argument("--reward", default=None, choices=["paper", "gain", "size"]); ap.add_argument("--agg", default="sum")
+    ap.add_argument("--reward", default=None, choices=["paper", "gain", "size"]); ap.add_argument("--agg", default=None)
+    ap.add_argument("--mean_readout", action="store_true", default=None, help="n-independent graph readout (default on for tdsp)")
     ap.add_argument("--eval_every", type=int, default=1000); ap.add_argument("--val_graphs", type=int, default=50)
     ap.add_argument("--device", default="cpu")
     a = ap.parse_args()
     a.reward = a.reward or ("size" if a.env == "tdsp" else "paper")
+    if a.agg is None: a.agg = "mean" if a.env == "tdsp" else "sum"
+    if a.mean_readout is None: a.mean_readout = (a.env == "tdsp")
     os.makedirs(a.out, exist_ok=True)
-    json.dump({**vars(a), "torch": torch.__version__}, open(f"{a.out}/config.json", "w"), indent=1)
+    n_channels = 2 if a.env == "tdsp" else 1
+    json.dump({**vars(a), "in_ch": n_channels, "torch": torch.__version__}, open(f"{a.out}/config.json", "w"), indent=1)
     rng = np.random.default_rng(a.seed); torch.manual_seed(a.seed)
     env = TDSPEnv(reward_mode=a.reward) if a.env == "tdsp" else DSPEnv(reward_mode=a.reward)
-    agent = DDQNAgent(a.nf, 3, a.agg, in_ch=env.n_channels, lr=a.lr, gamma=a.gamma, tau=a.tau, device=a.device)
+    agent = DDQNAgent(a.nf, 3, a.agg, in_ch=env.n_channels, mean_readout=a.mean_readout, lr=a.lr, gamma=a.gamma, tau=a.tau, device=a.device)
     vrng = np.random.default_rng(10_000 + a.seed)
     val = [sample_graph(a, vrng) for _ in range(a.val_graphs)]                  # fixed validation set
     buf = collections.deque(maxlen=None if a.frozen_buffer else a.buffer)

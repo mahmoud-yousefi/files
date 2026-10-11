@@ -25,13 +25,18 @@ def collate(items, device):
     b.an, b.gid, b.state, b.deg = t(AN, np.float32), t(G, np.int64), t(ST, np.float32), t(DG, np.float32)
     b.ng, b.N = len(items), off
     b.offs, b.sizes = np.array(offs), np.array(sizes)
+    b.sizes_t = torch.from_numpy(b.sizes.astype(np.float32)).to(device)
     return b
 
 
 class MPNNQ(nn.Module):
-    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False):
         super().__init__()
         self.nf, self.agg, self.in_ch = nf, agg, in_ch
+        # mean_readout: divide the graph-level sum by n, so Q does not scale with
+        # the graph size. Needed for training/testing across several n (especially
+        # with 'size' reward); default off keeps the DSP reproduction bit-identical.
+        self.mean_readout = mean_readout
         self.t4 = nn.Linear(2 * in_ch, nf)    # Eq.(4); in_ch=1 reproduces the DSP model (D5)
         self.t3 = nn.Linear(nf + 1, nf)       # Eq.(3)  per-edge embedding (DECISIONS D5)
         self.t1 = nn.ModuleList([nn.Linear(3 * nf, nf) for _ in range(layers)])   # Eq.(2)
@@ -58,4 +63,6 @@ class MPNNQ(nn.Module):
                 m = m / dcl
             h = F.relu(l2(F.relu(l1(m))))                                   # Eq.(2)
         s = z(b.ng, nf).index_add_(0, b.gid, h)                             # sum_u m_u
+        if self.mean_readout:
+            s = s / b.sizes_t.unsqueeze(1)                                  # n-independent readout
         return self.t5(F.relu(torch.cat([self.t6(s)[b.gid], self.t7(h)], 1))).squeeze(1)   # Eq.(6)

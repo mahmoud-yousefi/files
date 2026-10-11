@@ -17,7 +17,7 @@ from graphs import make_graph_data, grid, er, ba, hexa, tri
 from baselines import exact, is_total_dominating
 from tdsp_env import TDSPEnv
 from tdsp import greedy_tds, has_isolated
-from agent import DDQNAgent
+from agent import DDQNAgent, agent_for_model
 
 HEADER = ["family", "n", "source", "|S|", "gamma_t", "|S|/gamma_t", "greedy_tds", "ratio_vs_greedy", "time_s"]
 
@@ -44,9 +44,9 @@ def main():
     env = TDSPEnv(); agents = {}
     for spec in a.model:
         name, path = spec.split("=", 1)
-        ag = DDQNAgent(a.nf, 3, a.agg, in_ch=env.n_channels, device=a.device); ag.load(path)
+        ag = agent_for_model(path, device=a.device)
         agents[name] = ag
-        print(f"loaded {name}: {path}")
+        print(f"loaded {name}: {path} (in_ch={ag.online.in_ch}, agg={ag.online.agg}, mean_readout={ag.online.mean_readout})")
 
     rng = np.random.default_rng(2024)
     rows = []
