@@ -49,3 +49,8 @@ python experiments/tdsp/exp4_eval.py \
 ۱. اگر خطا گرفتی: متن کامل traceback را paste کن (اولین کار ما رفع باگ احتمالی است، چون بخش torch را من نتوانستم اجرا کنم).
 ۲. بعد از هر آزمایش این‌ها را به چت پیوست کن: `runs/<نام>/config.json`، `runs/<نام>/log.csv`، و `results/*/*.md` (یا `.csv`).
 ۳. هر روز در `results.md` خودت یک خط بنویس: تاریخ، دستور اجرا، مشاهده. نتایج را در Word ننویس؛ Word در انتها با هم ساخته می‌شود.
+
+```bash
+python experiments/tdsp/exp6_baselines.py --model size=runs/tdsp_er20_s0_size_v2/model.pt --out results/tdsp/exp6
+```
+آزمایش ۶ (خط مبنای قوی): TDSP = مسئله‌ی set-cover، پس علاوه بر greedy، `remove_redundant` و **GRASP** (در `heuristics.py`) اضافه شدند. نتیجه‌ی صادقانه: مدل در برابر GRASP **بدتر** است (۱۳ بدتر، ۶ مساوی، ۱ بهتر از ۲۰)؛ مزیتِ مدل **سرعت** است (~۵ برابر سریع‌تر از GRASP). خروجی در `results/tdsp/exp6/baselines.{md,csv}`.
