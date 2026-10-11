@@ -90,7 +90,7 @@ def main():
     with open(f"{a.out}/eval.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=HEADER); w.writeheader(); w.writerows(agg)
     with open(f"{a.out}/eval.md", "w") as f:
-        f.write("# Exp4: RL trained directly on TDSP\n\n")
+        f.write("# TDSP: RL models vs greedy / optimum across families and sizes\n\n")
         f.write("models: " + ", ".join(f"{k}={v}" for k, v in [(s.split('=',1)[0], s.split('=',1)[1]) for s in a.model]) + "\n\n")
         f.write("| " + " | ".join(HEADER) + " |\n|" + "---|" * len(HEADER) + "\n")
         for r in agg: f.write("| " + " | ".join(str(r[c]) for c in HEADER) + " |\n")
