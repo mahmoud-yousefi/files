@@ -8,7 +8,7 @@ import numpy as np, torch
 from graphs import *
 from env import DSPEnv
 from tdsp_env import TDSPEnv
-from agent import DDQNAgent
+from agent import DDQNAgent, agent_for_model
 from baselines import greedy_ds, greedy_ds_masked, exact, is_dominating, is_total_dominating
 
 TABLE3 = [(5,4),(5,5),(5,6),(5,7),(5,8),(5,9),(5,10),(6,6),(6,7),(6,8),(6,9),(6,10),(7,7),(7,8),(7,9),(7,10),(8,8),(8,9),(8,10),(9,9),(9,10),(10,10)]
@@ -47,7 +47,7 @@ def main():
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True)
     env = TDSPEnv() if a.env == "tdsp" else DSPEnv()
     check = is_total_dominating if a.env == "tdsp" else is_dominating
-    agent = DDQNAgent(a.nf, 3, a.agg, in_ch=env.n_channels, device=a.device); agent.load(a.model); rng = np.random.default_rng(a.seed)
+    agent = agent_for_model(a.model, device=a.device); rng = np.random.default_rng(a.seed)
     rows = []
     if a.mode == "grid_opt":      # paper Table 3
         hdr = ["m", "n", "model", "greedy_any", "greedy_masked", "opt_gamma", "opt_proven", "delta_model", "delta_greedy_masked"]

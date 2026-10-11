@@ -11,10 +11,11 @@ from tdsp import has_isolated
 
 
 def sample_graph(a, rng):
-    """A fresh training graph; for TDSP, skip graphs with an isolated vertex
-    (no total dominating set exists, so the episode could not terminate)."""
+    """A fresh training graph; size drawn from --sizes if given (multi-size training).
+    For TDSP, skip graphs with an isolated vertex (no total dominating set exists)."""
     while True:
-        gd = make_graph_data(er(a.n, a.p, rng))
+        n = int(rng.choice(a.sizes))
+        gd = make_graph_data(er(n, a.p, rng))
         if a.env != "tdsp" or not has_isolated(gd):
             return gd
 
@@ -31,6 +32,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--env", default="dsp", choices=["dsp", "tdsp"])
     ap.add_argument("--n", type=int, default=20); ap.add_argument("--p", type=float, default=0.4)
+    ap.add_argument("--sizes", default=None, help="comma list of training sizes; overrides --n (multi-size, paper-style)")
     ap.add_argument("--episodes", type=int, default=200000); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="runs/test")
     ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--gamma", type=float, default=1.0)
@@ -48,6 +50,7 @@ def main():
     ap.add_argument("--eval_every", type=int, default=1000); ap.add_argument("--val_graphs", type=int, default=50)
     ap.add_argument("--device", default="cpu")
     a = ap.parse_args()
+    a.sizes = [int(x) for x in a.sizes.split(",")] if a.sizes else [a.n]
     a.reward = a.reward or ("size" if a.env == "tdsp" else "paper")
     if a.agg is None: a.agg = "mean" if a.env == "tdsp" else "sum"
     if a.mean_readout is None: a.mean_readout = (a.env == "tdsp")
