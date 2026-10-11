@@ -9,3 +9,5 @@ __pycache__/
 
 # Model checkpoints (regenerable from runs/*/config.json)
 *.pt
+# Colab scratch
+*.zip
