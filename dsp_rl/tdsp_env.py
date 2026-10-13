@@ -29,11 +29,24 @@ class TDSPEnv:
         assert reward_mode in ("paper", "gain", "size")
         self.alpha, self.mode = alpha, reward_mode
 
-    def reset(self, gd):
+    def reset(self, gd, forced=()):
+        """Start an episode. `forced` (exp8) is a set of vertices placed in S before the
+        agent acts -- e.g. the leaf supports F, which belong to *every* total dominating
+        set. Each forced vertex satisfies its neighbours exactly as if the agent had
+        picked it, and it keeps needing a chosen neighbour of its own (vf stays 0 there
+        until RL supplies one), so the residual constraint of the P3 counterexample is
+        carried natively. `env.done` is True already at reset in the degenerate case
+        where F alone total-dominates the graph."""
         self.gd = gd
         self.vf = np.zeros(gd.n, dtype=np.uint8)     # 1 = has a neighbour in S (satisfied)
         self.ins = np.zeros(gd.n, dtype=np.uint8)    # 1 = chosen, i.e. a member of S
         self.selected = []
+        self.forced = {int(u) for u in forced}
+        for u in self.forced:
+            self.ins[u] = 1
+            self.vf[self.gd.nbrs[u]] = 1
+            self.selected.append(int(u))
+        self.done = bool(self.vf.all())
         return self._state()
 
     def _state(self):
@@ -54,5 +67,5 @@ class TDSPEnv:
         self.vf[nb] = 1                               # v's neighbours are satisfied, v is not
         self.ins[v] = 1
         self.selected.append(int(v))
-        done = bool(self.vf.all())                    # every vertex has a neighbour in S
-        return self._state(), r, done
+        self.done = bool(self.vf.all())               # every vertex has a neighbour in S
+        return self._state(), r, self.done

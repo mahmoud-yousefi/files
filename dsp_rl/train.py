@@ -1,13 +1,17 @@
-"""Train on ER G(n,p) graphs (paper Sec. 4.2). Example:
+"""Train on ER G(n,p) graphs (paper Sec. 4.2), or on the exp8 sparse families.
+Examples:
    python train.py --n 20 --episodes 200000 --seed 0 --out runs/er20_s0
+   python train.py --env tdsp --graph tree --n 20 --episodes 200000 --seed 0 --out runs/x   # exp8 arm A
+   python train.py --env tdsp --graph tree --force_leaf --n 20 ... --out runs/y             # exp8 arm B
 Writes: config.json, log.csv (loss, validation |D| and return), model.pt."""
 import argparse, collections, csv, json, os, time
 import numpy as np, torch
-from graphs import er, make_graph_data
+from graphs import sample, make_graph_data
 from env import DSPEnv
 from tdsp_env import TDSPEnv
 from agent import DDQNAgent
 from tdsp import has_isolated
+from reductions import leaf_supports
 
 
 def sample_graph(a, rng):
@@ -15,13 +19,20 @@ def sample_graph(a, rng):
     For TDSP, skip graphs with an isolated vertex (no total dominating set exists)."""
     while True:
         n = int(rng.choice(a.sizes))
-        gd = make_graph_data(er(n, a.p, rng))
+        gd = make_graph_data(sample(a, n, rng))
         if a.env != "tdsp" or not has_isolated(gd):
             return gd
 
 
-def run_policy(agent, env, gd):
-    s = env.reset(gd); done = False; ret = 0.0
+def forced_set(a, gd):
+    """exp8 arm B: seed every episode with the leaf supports F (forced into all TDS)."""
+    return leaf_supports(gd) if (a.env == "tdsp" and a.force_leaf) else ()
+
+
+def run_policy(agent, env, gd, a=None):
+    forced = forced_set(a, gd) if a else ()
+    s = env.reset(gd, forced=forced) if forced else env.reset(gd)
+    done = getattr(env, "done", False); ret = 0.0
     while not done:
         q = agent.q_values(gd, s); cand = env.candidates()
         s, r, done = env.step(int(cand[np.argmax(q[cand])])); ret += r
@@ -32,6 +43,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--env", default="dsp", choices=["dsp", "tdsp"])
     ap.add_argument("--n", type=int, default=20); ap.add_argument("--p", type=float, default=0.4)
+    ap.add_argument("--graph", default="er", choices=["er", "tree", "ba1"],
+                    help="training family (exp8: tree/ba1 are sparse, leaf-rich)")
+    ap.add_argument("--force_leaf", action="store_true",
+                    help="exp8 arm B: seed each episode with the leaf supports F (valid for TDSP)")
     ap.add_argument("--sizes", default=None, help="comma list of training sizes; overrides --n (multi-size, paper-style)")
     ap.add_argument("--episodes", type=int, default=200000); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="runs/test")
@@ -81,7 +96,9 @@ def main():
     loss = float("nan")
     for ep in range(start_ep, a.episodes + 1):
         eps = max(a.eps_end, a.eps_start - (a.eps_start - a.eps_end) * ep / (a.eps_decay_frac * a.episodes))
-        gd = sample_graph(a, rng); s = env.reset(gd); done = False
+        gd = sample_graph(a, rng)
+        s = env.reset(gd, forced=forced_set(a, gd)) if a.env == "tdsp" else env.reset(gd)
+        done = getattr(env, "done", False)
         while not done:
             v = agent.act(gd, s, env.candidates(), eps, rng); s2, r, done = env.step(v)
             if not (a.frozen_buffer and len(buf) >= a.buffer):
@@ -92,7 +109,7 @@ def main():
         if ep % a.target_every == 0:
             agent.soft_update()
         if ep % a.eval_every == 0:
-            res = [run_policy(agent, env, g) for g in val]
+            res = [run_policy(agent, env, g, a) for g in val]
             w.writerow([ep, round(eps, 3), loss, np.mean([x[0] for x in res]), np.mean([x[1] for x in res]), round(time.time() - t0, 1)]); f.flush()
             print(ep, f"eps={eps:.2f} loss={loss:.3f} val|D|={np.mean([x[0] for x in res]):.2f} ret={np.mean([x[1] for x in res]):.2f}", flush=True)
         if ep % a.ckpt_every == 0:

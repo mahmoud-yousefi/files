@@ -59,3 +59,8 @@ python experiments/tdsp/exp6_baselines.py --model size=runs/tdsp_er20_s0_size_v2
 python experiments/tdsp/exp7_reduction.py --out results/tdsp/exp7
 ```
 آزمایش ۷ (قواعد کاهش): سه قاعده (منزوی، مؤلفه‌ها، برگ) در `reductions.py`. نتیجه‌ی **منفی و صادقانه**: قاعده‌ی برگ برای TDSP **نامعتبر** است (مثال نقض `P3`)؛ قواعد ۱ و ۲ درست‌اند (۱۵۶ مقایسه با ILP، صفر خطا) ولی روی گراف‌های ما **هیچ‌کدام فعال نمی‌شوند** (همه تک‌مؤلفه‌ای، بدون رأس منزوی، درجه‌ی کمینه ≥۲). خروجی در `results/tdsp/exp7/reduction.{md,csv}`.
+
+```bash
+python experiments/tdsp/exp8_forcing.py phase0 --model size_v2=runs/tdsp_er20_s0_size_v2/model.pt --out results/tdsp/exp8
+```
+آزمایش ۸ (اجبارِ دانش ریاضی): توزیع آزمون عوض شد — خانواده‌های اسپارسِ پربرفی `tree` و `ba1` در `graphs.py`، جایی که مجموعه‌ی اجباری F (پشتیبان‌های برگ؛ در *هر* TDS عضو هستند) در ۱۰۰٪ نمونه‌ها غیرتهی است (~۳۰٪ رأس‌ها). **فاز ۰ (بدون آموزش، محلی):** مدل exp5 به‌صورت zero-shot روی اسپارس هم‌سطح بهینه/GRASP است؛ اجبارِ F کیفیت را حفظ می‌کند ولی تعداد تصمیم‌های RL را ۶۶–۸۸٪ کم می‌کند. خروجی: `results/tdsp/exp8/phase0_*.{md,csv}`. **فاز ۱ (دو بازوی آموزشی، روی Colab):** `colab_tdsp_exp8.ipynb` — بازوی A بدون اجبار، بازوی B با seed شدن F در ابتدای هر اپیزود (`train.py --graph tree --force_leaf`)، همان پروتکل exp5 (n=20، ۲۰۰هزار اپیزود)؛ سؤال: آیا اجبار، همگرایی و کیفیت نهایی را بهتر می‌کند؟ جزئیات طراحی در `DECISIONS.md` (T8).

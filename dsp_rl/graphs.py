@@ -35,3 +35,15 @@ def ba(n, m, rng):  return nx.barabasi_albert_graph(n, m, seed=_seed(rng))
 def grid(m, n):     return nx.grid_2d_graph(m, n)
 def tri(m, n):      return nx.triangular_lattice_graph(m, n)
 def hexa(m, n):     return nx.hexagonal_lattice_graph(m, n)
+# exp8 sparse families: every tree has >= 2 leaves, so the forced set F is never empty
+def tree(n, rng):   return nx.random_labeled_tree(n, seed=_seed(rng))   # uniform random labeled tree
+def ba1(n, rng):    return nx.barabasi_albert_graph(n, 1, seed=_seed(rng))  # random recursive tree (m=1)
+
+GENERATORS = {"er": er, "tree": tree, "ba1": ba1}   # by name, for train.py --graph
+
+
+def sample(a, n, rng):
+    """A graph of family `a.graph` on n vertices (train.py --graph; default ER)."""
+    if a.graph == "er":
+        return er(n, a.p, rng)
+    return GENERATORS[a.graph](n, rng)
