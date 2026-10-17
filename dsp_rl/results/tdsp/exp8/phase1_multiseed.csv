@@ -1,0 +1,3 @@
+arm,seeds,final_val|S| (mean+-std),first_near_final_ep (mean+-std)
+armA (plain),"0,1,2",9.67 +- 0.15,"160,000 +- 18,028"
+armB (forced),"0,1,2",9.67 +- 0.15,"43,333 +- 10,408"
