@@ -6,9 +6,9 @@ from model import MPNNQ, collate
 
 
 class DDQNAgent:
-    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False, lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False, dueling=False, lr=1e-4, gamma=1.0, tau=0.1, device="cpu"):
         self.dev = torch.device(device)
-        self.online = MPNNQ(nf, layers, agg, in_ch, mean_readout).to(self.dev)
+        self.online = MPNNQ(nf, layers, agg, in_ch, mean_readout, dueling=dueling).to(self.dev)
         self.target = copy.deepcopy(self.online)
         self.opt = torch.optim.Adam(self.online.parameters(), lr=lr)
         self.gamma, self.tau = gamma, tau
@@ -68,7 +68,8 @@ def agent_for_model(model_path, device="cpu", **over):
     env_name = cfg.get("env", "dsp")
     p = dict(nf=cfg.get("nf", 32), agg=cfg.get("agg", "sum"),
              in_ch=cfg.get("in_ch", 2 if env_name == "tdsp" else 1),
-             mean_readout=cfg.get("mean_readout", False))
+             mean_readout=cfg.get("mean_readout", False),
+             dueling=cfg.get("dueling", False))
     p.update(over)
     ag = DDQNAgent(layers=3, device=device, **p)
     ag.load(model_path)

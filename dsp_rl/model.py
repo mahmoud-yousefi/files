@@ -30,19 +30,25 @@ def collate(items, device):
 
 
 class MPNNQ(nn.Module):
-    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False):
+    def __init__(self, nf=32, layers=3, agg="sum", in_ch=1, mean_readout=False, dueling=False):
         super().__init__()
         self.nf, self.agg, self.in_ch = nf, agg, in_ch
         # mean_readout: divide the graph-level sum by n, so Q does not scale with
         # the graph size. Needed for training/testing across several n (especially
         # with 'size' reward); default off keeps the DSP reproduction bit-identical.
         self.mean_readout = mean_readout
+        # dueling (D3QN): Q(s,v) = V(s) + A(s,v) - mean_v A(s,v). The advantage head
+        # is the paper's Eq.(6) head; the value head reads only the pooled state.
+        # Default off keeps every existing checkpoint bit-identical.
+        self.dueling = dueling
         self.t4 = nn.Linear(2 * in_ch, nf)    # Eq.(4); in_ch=1 reproduces the DSP model (D5)
         self.t3 = nn.Linear(nf + 1, nf)       # Eq.(3)  per-edge embedding (DECISIONS D5)
         self.t1 = nn.ModuleList([nn.Linear(3 * nf, nf) for _ in range(layers)])   # Eq.(2)
         self.t2 = nn.ModuleList([nn.Linear(nf, nf) for _ in range(layers)])
         self.t6, self.t7 = nn.Linear(nf, nf), nn.Linear(nf, nf)                   # Eq.(6)
         self.t5 = nn.Linear(2 * nf, 1)
+        if dueling:
+            self.v_head = nn.Sequential(nn.Linear(nf, nf), nn.ReLU(), nn.Linear(nf, 1))
 
     def forward(self, b):
         N, nf, dev = b.N, self.nf, b.state.device
@@ -65,4 +71,9 @@ class MPNNQ(nn.Module):
         s = z(b.ng, nf).index_add_(0, b.gid, h)                             # sum_u m_u
         if self.mean_readout:
             s = s / b.sizes_t.unsqueeze(1)                                  # n-independent readout
-        return self.t5(F.relu(torch.cat([self.t6(s)[b.gid], self.t7(h)], 1))).squeeze(1)   # Eq.(6)
+        a = self.t5(F.relu(torch.cat([self.t6(s)[b.gid], self.t7(h)], 1))).squeeze(1)   # Eq.(6) advantage A(s,v)
+        if not self.dueling:
+            return a
+        v = self.v_head(F.relu(self.t6(s))).squeeze(1)                      # value V(s), one per graph
+        amean = z(b.ng).index_add_(0, b.gid, a) / b.sizes_t                 # per-graph mean of A
+        return v[b.gid] + a - amean[b.gid]                                  # Q = V + (A - mean A)
