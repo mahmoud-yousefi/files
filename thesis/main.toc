@@ -1,27 +1,58 @@
 \contentsline {chapter}{اظهارنامه دانشجو}{ب}{}%
 \contentsline {chapter}{تقدیم}{پ}{}%
 \contentsline {chapter}{سپاسگزاری}{ت}{}%
-\contentsline {chapter}{\numberline {1}گسترش چارچوب به مسئله مجموعه احاطه‌گر کامل}{1}{}%
-\contentsline {section}{\numberline {1-1}مقدمه و صورت مسئله}{1}{}%
-\contentsline {section}{\numberline {1-2}ساخت دومرحله‌ای و کران $2|D|$}{2}{}%
-\contentsline {section}{\numberline {1-3}چرا ماسک عمل مقاله برای \lr {TDSP} کار نمی‌کند؟}{2}{}%
-\contentsline {section}{\numberline {1-4}محیط بازطراحی‌شده: فضای عمل \lr {TDSP}}{4}{}%
-\contentsline {section}{\numberline {1-5}تابع پاداش: از «سود» به «هزینه هر تصمیم»}{5}{}%
-\contentsline {section}{\numberline {1-6}معماری شبکه: یک باگ مقیاس‌پذیری و رفع آن}{5}{}%
-\contentsline {section}{\numberline {1-7}دانش گراف: قواعد کاهش و اجبار برگ‌ها}{6}{}%
-\contentsline {section}{\numberline {1-8}الگوریتم یادگیری: از \lr {DDQN} به سر دوگانه}{8}{}%
-\contentsline {section}{\numberline {1-9}دو تقویت صفر-آموزش}{9}{}%
-\contentsline {subsection}{\numberline {1-9-1}پالایش خروجی (\lr {remove-redundant})}{9}{}%
-\contentsline {subsection}{\numberline {1-9-2}ماسک \lr {top-k} بر پایه سود}{10}{}%
-\contentsline {section}{\numberline {1-10}ارزیابی جامع}{10}{}%
-\contentsline {section}{\numberline {1-11}مثال گام‌به‌گام: کل فرآیند روی یک گراف کوچک}{12}{}%
-\contentsline {section}{\numberline {1-12}تهدیدهای اعتبار}{13}{}%
-\contentsline {chapter}{\numberline {2}نتیجه‌گیری و پیشنهادها}{15}{}%
-\contentsline {section}{\numberline {2-1}خلاصه مسیر انجام پژوهش}{15}{}%
-\contentsline {section}{\numberline {2-2}پاسخ به سؤالات تحقیق}{15}{}%
-\contentsline {section}{\numberline {2-3}مشارکت‌های پژوهش}{15}{}%
-\contentsline {section}{\numberline {2-4}قلمرو روش: کجا مفید است و کجا نیست}{16}{}%
-\contentsline {section}{\numberline {2-5}محدودیت‌ها}{17}{}%
-\contentsline {section}{\numberline {2-6}پیشنهادهای کارهای آینده}{17}{}%
-\contentsline {chapter}{منابع}{19}{}%
-\contentsline {chapter}{واژه‌نامه فارسی به انگلیسی}{20}{}%
+\contentsline {chapter}{\numberline {1}مقدمه}{1}{}%
+\contentsline {section}{\numberline {1-1}مقدمه کلی}{1}{}%
+\contentsline {section}{\numberline {1-2}مسائل بهینه‌سازی روی گراف}{1}{}%
+\contentsline {section}{\numberline {1-3}معرفی مسئله مجموعه احاطه‌گر}{2}{}%
+\contentsline {section}{\numberline {1-4}مسئله مجموعه احاطه‌گر کامل}{2}{}%
+\contentsline {section}{\numberline {1-5}انگیزه پژوهش}{2}{}%
+\contentsline {section}{\numberline {1-6}ساختار پایان‌نامه}{2}{}%
+\contentsline {chapter}{\numberline {2}مبانی نظری}{3}{}%
+\contentsline {section}{\numberline {2-1}مقدمه}{3}{}%
+\contentsline {section}{\numberline {2-2}مبانی نظریه گراف}{3}{}%
+\contentsline {subsection}{\numberline {2-2-1}تعاریف پایه}{3}{}%
+\contentsline {subsection}{\numberline {2-2-2}مجموعه احاطه‌گر و مجموعه احاطه‌گر کامل}{3}{}%
+\contentsline {section}{\numberline {2-3}یادگیری تقویتی}{4}{}%
+\contentsline {subsection}{\numberline {2-3-1}یادگیری Q عمیق دوگانه}{4}{}%
+\contentsline {section}{\numberline {2-4}شبکه‌های عصبی گرافی}{4}{}%
+\contentsline {subsection}{\numberline {2-4-1}شبکه عصبی پیام‌رسان}{5}{}%
+\contentsline {section}{\numberline {2-5}خلاصه}{5}{}%
+\contentsline {chapter}{\numberline {3}مرور پیشینه پژوهش}{6}{}%
+\contentsline {section}{\numberline {3-1}مقدمه}{6}{}%
+\contentsline {section}{\numberline {3-2}حل مسائل ترکیبیاتی با یادگیری تقویتی و شبکه‌های عصبی گرافی}{6}{}%
+\contentsline {section}{\numberline {3-3}پژوهش‌های مرتبط با مسئله مجموعه احاطه‌گر}{6}{}%
+\contentsline {section}{\numberline {3-4}پژوهش‌های مرتبط با مسئله مجموعه احاطه‌گر کامل}{7}{}%
+\contentsline {section}{\numberline {3-5}خلاصه}{7}{}%
+\contentsline {chapter}{\numberline {4}بازسازی و پیاده‌سازی روش مرجع}{8}{}%
+\contentsline {section}{\numberline {4-1}مقدمه}{8}{}%
+\contentsline {section}{\numberline {4-2}مدلسازی مسئله به‌صورت فرآیند تصمیم‌گیری مارکوف}{8}{}%
+\contentsline {section}{\numberline {4-3}معماری شبکه عصبی گرافی}{8}{}%
+\contentsline {section}{\numberline {4-4}الگوریتم یادگیری تقویتی دوگانه}{9}{}%
+\contentsline {section}{\numberline {4-5}طراحی فضای عمل و ماسک عمل}{9}{}%
+\contentsline {section}{\numberline {4-6}پیاده‌سازی و بازتولید نتایج}{9}{}%
+\contentsline {section}{\numberline {4-7}خلاصه}{9}{}%
+\contentsline {chapter}{\numberline {5}گسترش چارچوب به مسئله مجموعه احاطه‌گر کامل}{10}{}%
+\contentsline {section}{\numberline {5-1}مقدمه و صورت مسئله}{10}{}%
+\contentsline {section}{\numberline {5-2}ساخت دومرحله‌ای و کران $2|D|$}{11}{}%
+\contentsline {section}{\numberline {5-3}چرا ماسک عمل مقاله برای \lr {TDSP} کار نمی‌کند؟}{11}{}%
+\contentsline {section}{\numberline {5-4}محیط بازطراحی‌شده: فضای عمل \lr {TDSP}}{13}{}%
+\contentsline {section}{\numberline {5-5}تابع پاداش: از «سود» به «هزینه هر تصمیم»}{14}{}%
+\contentsline {section}{\numberline {5-6}معماری شبکه: یک باگ مقیاس‌پذیری و رفع آن}{14}{}%
+\contentsline {section}{\numberline {5-7}دانش گراف: قواعد کاهش و اجبار برگ‌ها}{15}{}%
+\contentsline {section}{\numberline {5-8}الگوریتم یادگیری: از \lr {DDQN} به سر دوگانه}{17}{}%
+\contentsline {section}{\numberline {5-9}دو تقویت صفر-آموزش}{18}{}%
+\contentsline {subsection}{\numberline {5-9-1}پالایش خروجی (\lr {remove-redundant})}{18}{}%
+\contentsline {subsection}{\numberline {5-9-2}ماسک \lr {top-k} بر پایه سود}{19}{}%
+\contentsline {section}{\numberline {5-10}ارزیابی جامع}{19}{}%
+\contentsline {section}{\numberline {5-11}مثال گام‌به‌گام: کل فرآیند روی یک گراف کوچک}{21}{}%
+\contentsline {section}{\numberline {5-12}تهدیدهای اعتبار}{22}{}%
+\contentsline {chapter}{\numberline {6}نتیجه‌گیری و پیشنهادها}{24}{}%
+\contentsline {section}{\numberline {6-1}خلاصه مسیر انجام پژوهش}{24}{}%
+\contentsline {section}{\numberline {6-2}پاسخ به سؤالات تحقیق}{24}{}%
+\contentsline {section}{\numberline {6-3}مشارکت‌های پژوهش}{24}{}%
+\contentsline {section}{\numberline {6-4}قلمرو روش: کجا مفید است و کجا نیست}{25}{}%
+\contentsline {section}{\numberline {6-5}محدودیت‌ها}{26}{}%
+\contentsline {section}{\numberline {6-6}پیشنهادهای کارهای آینده}{26}{}%
+\contentsline {chapter}{منابع}{28}{}%
+\contentsline {chapter}{واژه‌نامه فارسی به انگلیسی}{31}{}%
