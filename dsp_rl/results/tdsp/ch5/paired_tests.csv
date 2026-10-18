@@ -1,0 +1,12 @@
+domain,a,b,why,n,mean_a,mean_b,diff,lo,hi,p,wins,ties,losses
+dense,armA@3+rr,greedy+rr,output refinement on the trivial baseline,85,0.989772,0.994681,-0.004909,-0.019126,0.010094,0.484915,10,69,6
+dense,armA@3+rr,grasp,model+boosts vs the strong heuristic,85,0.989772,0.987205,0.002567,-0.017119,0.022819,0.850807,12,52,21
+dense,size_v2@3+rr,grasp,best dense checkpoint vs GRASP,85,0.996371,0.987205,0.009166,-0.01174,0.03072,0.592425,12,49,24
+dense,armA@3+rr,random@3+rr,is the Q head worth anything inside the same mask?,85,0.989772,1.098252,-0.10848,-0.150391,-0.071258,0.0,38,42,5
+dense,armA,armA+rr,effect of remove_redundant alone,85,1.204602,1.059425,0.145178,0.109463,0.183346,0.0,0,38,47
+dense,armA,armA@3,effect of the top-3 mask alone,85,1.204602,1.009065,0.195538,0.15461,0.239349,0.0,1,25,59
+dense,armA@3+rr,armA,both boosts together,85,0.989772,1.204602,-0.214831,-0.257281,-0.174598,0.0,64,20,1
+dense,greedy+rr,greedy,remove_redundant on greedy (baseline sanity),88,0.994862,1.0,-0.005137,-0.009804,-0.001649,0.011719,8,80,0
+dense,armB@3+rr,greedy+rr,"forced arm, dense graphs",85,1.016515,0.994681,0.021834,0.00394,0.041031,0.03509,9,57,19
+sparse,armA+F,greedy+rr,sparse: model vs post-processed greedy,80,0.985986,0.991826,-0.00584,-0.009054,-0.003065,0.000426,16,64,0
+sparse,armA+F,grasp,sparse: model vs GRASP,80,0.985986,0.985859,0.000127,0.0,0.000382,0.317311,0,79,1

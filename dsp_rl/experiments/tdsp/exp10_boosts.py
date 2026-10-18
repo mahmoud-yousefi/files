@@ -52,8 +52,13 @@ DEFAULT_MODELS = [
     ("paper_v2", "runs/tdsp_er20_s0_paper_v2/model.pt"), # exp5 dense-trained, Eq.(5) reward
 ]
 SPARSE = {"TREE": tree, "BA1": ba1}
-RAW_HEADER = ["domain", "family", "n", "model", "k", "rr", "source", "|S|", "gamma_t",
+RAW_HEADER = ["inst", "domain", "family", "n", "model", "k", "rr", "source", "|S|", "gamma_t",
               "|S|/gamma_t", "ratio_vs_greedy", "rl_steps", "rr_dropped", "time_s"]
+
+# `inst` is the 1-based index of the graph in this run. It is what makes the raw table
+# pairable: every source on the same graph shares the value, so the chapter can quote
+# paired differences and bootstrap CIs instead of comparing two independent means.
+INST = [0]
 
 
 # --------------------------------------------------------------------------- instances
@@ -113,7 +118,7 @@ def rollout(agent, env, gd, forced=(), k=None, rng=None):
 
 # --------------------------------------------------------------------------- bookkeeping
 def raw_row(domain, family, gd, model, k, rr, source, S, gt, greedy, steps, rr_dropped, dt):
-    return {"domain": domain, "family": family, "n": gd.n, "model": model,
+    return {"inst": INST[0], "domain": domain, "family": family, "n": gd.n, "model": model,
             "k": "inf" if k is None else str(k), "rr": int(bool(rr)), "source": source,
             "|S|": len(S), "gamma_t": gt if gt else "",
             "|S|/gamma_t": round(len(S) / gt, 3) if gt else "",
@@ -270,6 +275,7 @@ def main():
         if has_isolated(gd):
             continue
         checks["instances"] += 1
+        INST[0] = i
         F = leaf_supports(gd); tag = "+F" if F else ""
         gt = exact(gd, "tot", a.ilp_time)[0] if gd.n <= a.ilp_max else None
         greedy = greedy_tds(gd)
@@ -301,13 +307,16 @@ def main():
                 emit(domain, family, gd, name, k, 0, f"{base}@{k}", Sk, gt, greedy, stepsk, 0, dtk)
                 emit(domain, family, gd, name, k, 1, f"{base}@{k}+rr", Rk, gt, greedy, stepsk,
                      len(Sk) - len(Rk), dtk + trk)
-            # ---- control: same legal set (top-k by gain), but a coin flip instead of Q -----
-            for k in ks:
-                Cr, dtc, stepsc = rollout(None, env, gd, F, k=k, rng=np.random.default_rng(7000 + gd.n))
-                Rc, trc = refine(gd, Cr)
-                emit(domain, family, gd, "", k, 0, f"random@{k}", Cr, gt, greedy, stepsc, 0, dtc)
-                emit(domain, family, gd, "", k, 1, f"random@{k}+rr", Rc, gt, greedy, stepsc,
-                     len(Cr) - len(Rc), dtc + trc)
+        # ---- control: same legal set (top-k by gain), but a coin flip instead of Q ------
+        # Emitted once per instance, not once per checkpoint: the roll-out never touches the
+        # network (rng only), so inside the checkpoint loop it produced four identical rows
+        # per graph and inflated the instance counts of `random@k` in every table.
+        for k in ks:
+            Cr, dtc, stepsc = rollout(None, env, gd, F, k=k, rng=np.random.default_rng(7000 + gd.n))
+            Rc, trc = refine(gd, Cr)
+            emit(domain, family, gd, "", k, 0, f"random@{k}", Cr, gt, greedy, stepsc, 0, dtc)
+            emit(domain, family, gd, "", k, 1, f"random@{k}+rr", Rc, gt, greedy, stepsc,
+                 len(Cr) - len(Rc), dtc + trc)
         if i % 20 == 0:
             print(f"  {i}/{len(instances)} instances", flush=True)
 

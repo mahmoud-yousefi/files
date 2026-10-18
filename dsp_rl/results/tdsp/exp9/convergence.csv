@@ -1,0 +1,5 @@
+pair,plain_run,d3qn_run,episodes,plain_final,d3qn_final,plain_min,d3qn_min,plain_hit@9.8,d3qn_hit@9.8,plain_sustained@9.8,d3qn_sustained@9.8,speedup@9.8,plain_hit@10.0,d3qn_hit@10.0,plain_sustained@10.0,d3qn_sustained@10.0,speedup@10.0
+armA seed0,armA_sparse_base,armA_sparse_base_d3qn,200000,9.5,9.5,9.5,9.5,105000,60000,105000,60000,1.75,95000,60000,95000,60000,1.58
+armA seed1,armA_sparse_base_s1,armA_sparse_base_d3qn_s1,200000,9.8,9.8,9.8,9.8,180000,125000,190000,200000,1.44,140000,105000,140000,105000,1.33
+armA seed2,armA_sparse_base_s2,armA_sparse_base_d3qn_s2,200000,9.72,9.7,9.7,9.7,165000,85000,165000,95000,1.94,130000,70000,130000,70000,1.86
+armB seed0,armB_sparse_forced,armB_sparse_forced_d3qn,200000,9.5,9.5,9.5,9.5,45000,25000,45000,40000,1.8,40000,20000,40000,20000,2.0

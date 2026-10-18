@@ -1,0 +1,14 @@
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1-1}{\ignorespaces کیفیت ساخت دومرحله‌ای ($|S|/\gamma _t$) به تفکیک خانواده گراف و منبع مجموعه $D$. خط‌چین، مرز بهینگی است.}}{3}{}%
+\contentsline {figure}{\numberline {1-2}{\ignorespaces خروجی ماسک مقاله روی \lr {TDSP}: همه اجراها مجموعه مستقل‌اند و هیچ‌کدام احاطه‌کننده کامل نیست.}}{3}{}%
+\contentsline {figure}{\numberline {1-3}{\ignorespaces مثال نقض روی $P_4$: (الف) گراف؛ (ب) خروجی ماسک مقاله ($S=\{1,3\}$) که احاطه‌گر کامل نیست؛ (ج) جواب بهینه $\{1,2\}$ با همان اندازه.}}{4}{}%
+\contentsline {figure}{\numberline {1-4}{\ignorespaces اثر رفع باگ مقیاس‌پذیری خوانش گراف بر کیفیت مدل.}}{6}{}%
+\contentsline {figure}{\numberline {1-5}{\ignorespaces تعداد تصمیم‌های عامل به‌ازای هر گراف، با و بدون اجبار برگ‌ها.}}{7}{}%
+\contentsline {figure}{\numberline {1-6}{\ignorespaces چپ: همگرایی \lr {DDQN} و \lr {D3QN} با seed یکسان. راست: اثر اجبار برگ روی میانگین سه seed با نوار کمینه–بیشینه.}}{8}{}%
+\contentsline {figure}{\numberline {1-7}{\ignorespaces اثر \lr {remove-redundant} روی خروجی چهار \lr {checkpoint}.}}{9}{}%
+\contentsline {figure}{\numberline {1-8}{\ignorespaces جاروب ماسک \lr {top-k}: نسبت اندازه به حریصانه بر حسب $k$.}}{10}{}%
+\contentsline {figure}{\numberline {1-9}{\ignorespaces کیفیت نسبت به حریصانه به تفکیک خانواده (میانگین $\pm $ خطای معیار).}}{11}{}%
+\contentsline {figure}{\numberline {1-10}{\ignorespaces خانواده شش‌گوش: تنها خانواده‌ای که سیاست به‌طور معنادار از بازارزیابی بهتر است.}}{12}{}%
+\contentsline {figure}{\numberline {1-11}{\ignorespaces کیفیت در برابر زمان استنتاج هر گراف (محور زمان لگاریتمی).}}{12}{}%
+\contentsline {figure}{\numberline {1-12}{\ignorespaces اجرای گام‌به‌گام روی درخت $n=12$: (الف) نشاندن $F$؛ (ب) پس از یک تصمیم شبکه؛ (ج) مجموعه نهایی.}}{13}{}%
+\addvspace {10\p@ }
