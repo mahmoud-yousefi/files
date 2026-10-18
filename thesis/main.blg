@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+A level-1 auxiliary file: chapters/ch1.aux
+A level-1 auxiliary file: chapters/ch2.aux
+A level-1 auxiliary file: chapters/ch3.aux
+A level-1 auxiliary file: chapters/ch4.aux
+A level-1 auxiliary file: chapters/ch5.aux
+A level-1 auxiliary file: chapters/ch6.aux
+The style file: unsrt.bst
+Database file #1: refs.bib
+Warning--empty journal in bondy2008
+Warning--empty journal in garey1979computers
+Warning--can't use both volume and number fields in chen2024dsp
+You've used 17 entries,
+            1791 wiz_defined-function locations,
+            546 strings with 6230 characters,
+and the built_in function-call counts, 4289 in all, are:
+= -- 376
+> -- 194
+< -- 6
++ -- 71
+- -- 54
+* -- 259
+:= -- 645
+add.period$ -- 51
+call.type$ -- 17
+change.case$ -- 14
+chr.to.int$ -- 0
+cite$ -- 20
+duplicate$ -- 214
+empty$ -- 418
+format.name$ -- 54
+if$ -- 982
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 21
+newline$ -- 88
+num.names$ -- 17
+pop$ -- 73
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 119
+stack$ -- 0
+substring$ -- 262
+swap$ -- 69
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 3
+while$ -- 37
+width$ -- 19
+write$ -- 182
+(There were 3 warnings)

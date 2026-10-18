@@ -2,3 +2,4 @@ torch
 numpy
 scipy
 networkx
+archil==0.17.0

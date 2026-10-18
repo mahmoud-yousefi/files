@@ -1,0 +1,98 @@
+\begin{thebibliography}{10}
+
+\bibitem{alanko2010}
+Samu Alanko, Simon Crevals, Anton Isopoussu, et~al.
+\newblock Computing the domination number of grid graphs.
+\newblock {\em The Electronic Journal of Combinatorics}, 18, 2011.
+
+\bibitem{bengio2021}
+Yoshua Bengio, Andrea Lodi, and Antoine Prouvost.
+\newblock Machine learning for combinatorial optimization: a methodological
+  tour d'horizon.
+\newblock {\em European Journal of Operational Research}, 290(2):405--421,
+  2021.
+
+\bibitem{bondy2008}
+J~Adrian Bondy and U~S~R Murty.
+\newblock Graph theory.
+\newblock 2008.
+
+\bibitem{paschos2010}
+Vangelis~Th Paschos.
+\newblock {\em Applications of Combinatorial Optimization}.
+\newblock ISTE Ltd and John Wiley & Sons Inc, 2010.
+
+\bibitem{haynes1998fundamentals}
+Teresa~W Haynes, Stephen~T Hedetniemi, and Peter~J Slater.
+\newblock {\em Fundamentals of domination in graphs}.
+\newblock Marcel Dekker, Inc., 1998.
+
+\bibitem{ore1962theory}
+Oystein Ore.
+\newblock {\em Theory of Graphs}, volume~38.
+\newblock American Mathematical Society, 1962.
+
+\bibitem{garey1979computers}
+Michael~R Garey and David~S Johnson.
+\newblock Computers and intractability: A guide to the theory of
+  np-completeness.
+\newblock 1979.
+
+\bibitem{gilmer2017mpnn}
+Justin Gilmer, Samuel~S Schoenholz, Patrick~F Riley, Oriol Vinyals, and
+  George~E Dahl.
+\newblock Neural message passing for quantum chemistry.
+\newblock In {\em International Conference on Machine Learning}, pages
+  1263--1272, 2017.
+
+\bibitem{khalil2017learning}
+Elias~B Khalil, Hanjun Dai, Yuyu Zhang, Bistra Dilkina, and Le~Song.
+\newblock Learning combinatorial optimization algorithms over graphs.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  6348--6358, 2017.
+
+\bibitem{bello2016neural}
+Irwan Bello, Hieu Pham, Quoc~V Le, Mohammad Norouzi, and Samy Bengio.
+\newblock Neural combinatorial optimization with reinforcement learning.
+\newblock In {\em International Conference on Learning Representations}, 2016.
+
+\bibitem{chen2024dsp}
+Ye~Chen, Qingyuan Zhang, and Xin Yao.
+\newblock Graph neural network based deep reinforcement learning for solving
+  the dominating set problem.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~38, pages 20774--20782, 2024.
+
+\bibitem{sutton2018reinforcement}
+Richard~S Sutton and Andrew~G Barto.
+\newblock {\em Reinforcement Learning: An Introduction}.
+\newblock MIT Press, 2nd edition, 2018.
+
+\bibitem{mnih2015human}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, et~al.
+\newblock Human-level control through deep reinforcement learning.
+\newblock {\em Nature}, 518:529--533, 2015.
+
+\bibitem{vanhasselt2016ddqn}
+Hado Van~Hasselt, Arthur Guez, and David Silver.
+\newblock Deep reinforcement learning with double q-learning.
+\newblock {\em AAAI Conference on Artificial Intelligence}, 2016.
+
+\bibitem{scarselli2008graph}
+Franco Scarselli, Marco Gori, Ah~Chung Tsoi, Markus Hagenbuchner, and Gabriele
+  Monfardini.
+\newblock The graph neural network model.
+\newblock {\em IEEE Transactions on Neural Networks}, 20(1):61--80, 2008.
+
+\bibitem{vinyals2015pointer}
+Oriol Vinyals, Meire Fortunato, and Navdeep Jaitly.
+\newblock Pointer networks.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  2692--2700, 2015.
+
+\bibitem{cockayne2004total}
+Ernest~J Cockayne, RM~Dawes, and Stephen~T Hedetniemi.
+\newblock Total domination in graphs.
+\newblock {\em Networks}, 10(3):211--219, 1980.
+
+\end{thebibliography}

@@ -45,6 +45,13 @@ python experiments/tdsp/exp4_eval.py \
 ```
 آزمایش ۴ (RL مستقیم روی TDSP): روی لتیس‌ها مدل از greedy بهتر است (میانگین `|S|/greedy` ≈ ۰.۹۵، مثلاً HEX 196 → ۸۳ در برابر ۹۸)؛ ولی روی گراف‌های تصادفیِ بزرگ `n≥80` بدتر است (تعمیم‌نیافته، چون فقط روی `n=20` آموزش دیده). خروجی در `results/tdsp/exp4/eval.{md,csv}`.
 
+## دیسک Archil — فایل‌هایی که باید بعد از اجرا بمانند
+```bash
+cp .env.example .env        # ARCHIL_API_KEY=key-... را داخلش بگذار (از https://console.archil.com/api-keys)
+python archil_persist_check.py   # نوشتن در exec اول، خواندن در exec دوم؛ باید OK بدهد
+```
+`archil_store.py` سمت سرور به دیسکِ `ARCHIL_DISK_ID` وصل می‌شود (`run` برای اجرای یک دستور، `write_text`/`read_text` برای فایل)، کلید فقط از `ARCHIL_API_KEY` خوانده می‌شود و هرگز در کد یا سمت مرورگر نمی‌آید. هر exec کانتینر تازه دارد؛ فقط فایل روی دیسک می‌ماند، پس در exec داخل یک زیرپوشهٔ تازه بنویس (یا `archil checkout <path>`). چک اول دیسک را می‌سازد و idش را در `.env` ثبت می‌کند و توکن mount را چاپ نمی‌کند.
+
 ## چطور نتیجه را برای من بفرست
 ۱. اگر خطا گرفتی: متن کامل traceback را paste کن (اولین کار ما رفع باگ احتمالی است، چون بخش torch را من نتوانستم اجرا کنم).
 ۲. بعد از هر آزمایش این‌ها را به چت پیوست کن: `runs/<نام>/config.json`، `runs/<نام>/log.csv`، و `results/*/*.md` (یا `.csv`).

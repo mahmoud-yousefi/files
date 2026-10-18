@@ -4,6 +4,11 @@ dsp_rl/venv/
 __pycache__/
 *.py[cod]
 
+# Local env files (ARCHIL_API_KEY lives here; .env.example is the template)
+.env
+.env.*
+!.env.example
+
 # macOS
 .DS_Store
 
@@ -11,3 +16,6 @@ __pycache__/
 *.pt
 # Colab scratch
 *.zip
+
+# Freebuff agent scratch (project id + sandboxed tool runtime, regenerable)
+.freebuff/
